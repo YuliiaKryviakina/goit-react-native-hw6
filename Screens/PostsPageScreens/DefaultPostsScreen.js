@@ -1,18 +1,36 @@
-import { FlatList, Image } from 'react-native';
-import { Dimensions, Keyboard, KeyboardAvoidingView, StyleSheet } from 'react-native';
-import { Text, View } from 'react-native';
+import { FlatList, Image } from "react-native";
+import {
+  Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
+  StyleSheet,
+} from "react-native";
+import { Text, View } from "react-native";
 
-import { useEffect, useState } from 'react';
-import PostsItem from '../../components/PostsItem/PostsItem';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import PostsItem from "../../components/PostsItem/PostsItem";
+import {
+  selectAvatar,
+  selectEmail,
+  selectLogin,
+} from "../../redux/auth/authSelections";
 
 const DefaultPostsScreen = ({ route }) => {
+  const dispatch = useDispatch();
+
+  const avatar = useSelector(selectAvatar);
+  const login = useSelector(selectLogin);
+  const email = useSelector(selectEmail);
+
   const [posts, setPosts] = useState([
     {
-      id: '1',
+      id: "1",
       postImg:
-        'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fgoit-react-native-hw-05-dbed3e8b-5429-4e6e-a6ba-fefe43283569/Camera/1609f830-6073-4560-8596-6f26f450b3a3.jpg',
-      postName: 'all',
-      postAddress: 'Ukraine',
+        "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fgoit-react-native-hw-05-dbed3e8b-5429-4e6e-a6ba-fefe43283569/Camera/1609f830-6073-4560-8596-6f26f450b3a3.jpg",
+      postName: "all",
+      postAddress: "Ukraine",
       postLocation: { latitude: 48.383022, longitude: 31.1828699 },
     },
   ]);
@@ -20,16 +38,16 @@ const DefaultPostsScreen = ({ route }) => {
   useEffect(() => {
     if (!route.params) return;
 
-    setPosts(prev => [...prev, route.params]);
+    setPosts((prev) => [...prev, route.params]);
   }, [route.params]);
 
   return (
     <View style={styles.container}>
       <View style={styles.avatarWrapper}>
-        <Image style={styles.avatarImg} />
+        <Image style={styles.avatarImg} source={avatar} />
         <View>
-          <Text style={styles.avatarName}>Natali Romanova</Text>
-          <Text style={styles.avatarEmail}>email@example.com</Text>
+          <Text style={styles.avatarName}>{login}</Text>
+          <Text style={styles.avatarEmail}>{email}</Text>
         </View>
       </View>
       <FlatList
@@ -59,42 +77,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 32,
 
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
-
   avatarWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 32,
   },
-
   avatarImg: {
     width: 60,
     height: 60,
 
     marginRight: 8,
 
-    backgroundColor: '#f6f6f6',
+    backgroundColor: "#f6f6f6",
     borderRadius: 16,
   },
-
   avatarName: {
-    fontFamily: 'Roboto',
-    fontStyle: 'normal',
+    fontFamily: "Roboto",
+    fontStyle: "normal",
     fontWeight: 700,
     fontSize: 13,
     lineHeight: 15,
 
-    color: '#212121',
+    color: "#212121",
   },
-  
   avatarEmail: {
-    fontFamily: 'Roboto',
-    fontStyle: 'normal',
+    fontFamily: "Roboto",
+    fontStyle: "normal",
     fontWeight: 400,
     fontSize: 11,
     lineHeight: 13,
 
-    color: 'rgba(33, 33, 33, 0.8)',
+    color: "rgba(33, 33, 33, 0.8)",
   },
 });
