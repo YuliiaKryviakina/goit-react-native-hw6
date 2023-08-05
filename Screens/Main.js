@@ -28,12 +28,12 @@ const Main = () => {
     <NavigationContainer>
       {!stateChange ? (
         <MainStack.Navigator
-          initialRouteName="Regestration"
+          initialRouteName="Registration"
           screenOptions={{ headerShown: false }}
         >
           <MainStack.Screen name="Login" component={LoginScreen} />
           <MainStack.Screen
-            name="Regestration"
+            name="Registration"
             component={RegistrationScreen}
           />
         </MainStack.Navigator>

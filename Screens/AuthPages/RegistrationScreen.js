@@ -83,12 +83,12 @@ const RegistrationScreen = () => {
     }
   };
 
-  const uploadImageToServer = async (imageUri, prefixFolder) => {
+  const uploadImageToServer = async (imageUrl, prefixFolder) => {
     const uniquePostId = Date.now().toString();
 
-    if (imageUri) {
+    if (imageUrl) {
       try {
-        const response = await fetch(imageUri);
+        const response = await fetch(imageUrl);
 
         const file = await response.blob();
 
