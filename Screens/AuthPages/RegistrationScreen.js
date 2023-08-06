@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Dimensions, StyleSheet } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { authSignUpUser } from "../../";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { Dimensions, StyleSheet } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+
+import { authSignUpUser } from '../../redux/auth/authOperations';
 
 import {
   View,
@@ -15,17 +17,18 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
-} from "react-native";
+} from 'react-native';
 
-import backgroundImg from "../../assets/img/background.jpg";
-import SvgAddButton from "../../assets/svg/SvgAddButton";
-import { useNavigation } from "@react-navigation/native";
-import { authStateChange } from "../../redux/auth/authSlice";
-import { getStorage } from "firebase/storage";
+import backgroundImg from '../../assets/img/background.jpg';
+import SvgAddButton from '../../assets/svg/SvgAddButton';
+import { useNavigation } from '@react-navigation/native';
+import { authStateChange } from '../../redux/auth/authSlice';
+import { getStorage } from 'firebase/storage';
 
 const RegistrationScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const [avatar, setAvatar] = useState(null);
   const [login, setLogin] = useState(null);
   const [email, setEmail] = useState(null);
@@ -33,9 +36,10 @@ const RegistrationScreen = () => {
 
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isSecureText, setIsSecureText] = useState(true);
-  const [currentFocused, setCurrentFocused] = useState("");
+  const [currentFocused, setCurrentFocused] = useState('');
 
   const clearUserForm = () => {
+    setAvatar(null);
     setLogin(null);
     setEmail(null);
     setPassword(null);
@@ -45,10 +49,10 @@ const RegistrationScreen = () => {
     // if (!login || !email || !password) return console.warn('Будь ласка заповніть поля');
 
     const photo = avatar
-      ? await uploadImageToServer(avatar, "avatars")
-      : "https://firebasestorage.googleapis.com/v0/b/first-react-native-proje-98226.appspot.com/o/userAvatars%2FDefault_pfp.svg.png?alt=media&token=7cafd3a4-f9a4-40f2-9115-9067f5a15f57";
+      ? await uploadImageToServer(avatar, 'avatars')
+      : 'https://firebasestorage.googleapis.com/v0/b/first-react-native-proje-98226.appspot.com/o/userAvatars%2FDefault_pfp.svg.png?alt=media&token=7cafd3a4-f9a4-40f2-9115-9067f5a15f57';
 
-    dispatch(authSignUpUser({ photo, login, email, password })).then((data) => {
+    dispatch(authSignUpUser({ photo, login, email, password })).then(data => {
       if (data === undefined || !data.uid) {
         alert(`Реєстрацію не виконано!`);
         return;
@@ -83,19 +87,16 @@ const RegistrationScreen = () => {
     }
   };
 
-  const uploadImageToServer = async (imageUrl, prefixFolder) => {
+  const uploadImageToServer = async (imageUri, prefixFolder) => {
     const uniquePostId = Date.now().toString();
 
-    if (imageUrl) {
+    if (imageUri) {
       try {
-        const response = await fetch(imageUrl);
+        const response = await fetch(imageUri);
 
         const file = await response.blob();
 
-        const imageRef = await ref(
-          myStorage,
-          `${prefixFolder}/${uniquePostId}`
-        );
+        const imageRef = await ref(myStorage, `${prefixFolder}/${uniquePostId}`);
 
         await uploadBytes(imageRef, file);
 
@@ -103,26 +104,26 @@ const RegistrationScreen = () => {
 
         return downloadURL;
       } catch (error) {
-        console.warn("uploadImageToServer: ", error);
+        console.warn('uploadImageToServer: ', error);
       }
     }
   };
 
-  const handleFocus = (currentFocusInput = "") => {
+  const handleFocus = (currentFocusInput = '') => {
     setIsShowKeyboard(true);
     setCurrentFocused(currentFocusInput);
   };
 
   const handleKeyboardHide = () => {
     setIsShowKeyboard(false);
-    setCurrentFocused("");
+    setCurrentFocused('');
     Keyboard.dismiss();
   };
 
   return (
     <TouchableWithoutFeedback onPress={handleKeyboardHide}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
         <ImageBackground source={backgroundImg} style={styles.bgContainer}>
@@ -134,9 +135,7 @@ const RegistrationScreen = () => {
                 onPress={onLoadAvatar}
               >
                 <SvgAddButton
-                  style={
-                    avatar ? styles.btnAddAvatarSvgLoad : styles.btnAddAvatarSvg
-                  }
+                  style={avatar ? styles.btnAddAvatarSvgLoad : styles.btnAddAvatarSvg}
                 />
               </TouchableOpacity>
             </View>
@@ -144,9 +143,8 @@ const RegistrationScreen = () => {
             <TextInput
               style={{
                 ...styles.input,
-                backgroundColor:
-                  currentFocused === "login" ? "#ffffff" : "#f6f6f6",
-                borderColor: currentFocused === "login" ? "#ff6c00" : "#e8e8e8",
+                backgroundColor: currentFocused === 'login' ? '#ffffff' : '#f6f6f6',
+                borderColor: currentFocused === 'login' ? '#ff6c00' : '#e8e8e8',
               }}
               placeholder="Логін"
               placeholderTextColor="#bdbdbd"
@@ -154,14 +152,13 @@ const RegistrationScreen = () => {
               autoCapitalize="none"
               value={login}
               onChangeText={setLogin}
-              onFocus={() => handleFocus("login")}
+              onFocus={() => handleFocus('login')}
             />
             <TextInput
               style={{
                 ...styles.input,
-                backgroundColor:
-                  currentFocused === "email" ? "#ffffff" : "#f6f6f6",
-                borderColor: currentFocused === "email" ? "#ff6c00" : "#e8e8e8",
+                backgroundColor: currentFocused === 'email' ? '#ffffff' : '#f6f6f6',
+                borderColor: currentFocused === 'email' ? '#ff6c00' : '#e8e8e8',
               }}
               placeholder="Адреса електронної пошти"
               placeholderTextColor="#bdbdbd"
@@ -169,7 +166,7 @@ const RegistrationScreen = () => {
               autoCapitalize="none"
               value={email}
               onChangeText={setEmail}
-              onFocus={() => handleFocus("email")}
+              onFocus={() => handleFocus('email')}
             />
             <View
               style={{
@@ -182,10 +179,8 @@ const RegistrationScreen = () => {
                   ...styles.input,
                   ...styles.inputLast,
 
-                  backgroundColor:
-                    currentFocused === "password" ? "#ffffff" : "#f6f6f6",
-                  borderColor:
-                    currentFocused === "password" ? "#ff6c00" : "#e8e8e8",
+                  backgroundColor: currentFocused === 'password' ? '#ffffff' : '#f6f6f6',
+                  borderColor: currentFocused === 'password' ? '#ff6c00' : '#e8e8e8',
                 }}
                 placeholder="Пароль"
                 placeholderTextColor="#bdbdbd"
@@ -194,32 +189,23 @@ const RegistrationScreen = () => {
                 secureTextEntry={isSecureText}
                 value={password}
                 onChangeText={setPassword}
-                onFocus={() => handleFocus("password")}
+                onFocus={() => handleFocus('password')}
               />
               <TouchableOpacity
                 style={styles.btnPassShow}
-                onPress={() =>
-                  password !== "" && setIsSecureText((prevState) => !prevState)
-                }
+                onPress={() => password !== '' && setIsSecureText(prevState => !prevState)}
               >
                 <Text style={styles.btnPassShowText}>Показати</Text>
               </TouchableOpacity>
             </View>
 
             <View>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={onSubmitUserRegister}
-              >
+              <TouchableOpacity style={styles.btn} onPress={onSubmitUserRegister}>
                 <Text style={styles.btnText}>Зареєструватися</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.link}
-                onPress={() => navigation.navigate("Login")}
-              >
+              <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('Login')}>
                 <Text style={styles.linkText}>
-                  Вже є акаунт?{" "}
-                  <Text style={styles.linkTextUnderline}>Увійти</Text>
+                  Вже є акаунт? <Text style={styles.linkTextUnderline}>Увійти</Text>
                 </Text>
               </TouchableOpacity>
             </View>
@@ -238,165 +224,152 @@ const styles = StyleSheet.create({
   },
 
   bgContainer: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
 
-    flexDirection: "row",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'flex-end',
 
-    resizeMode: "cover",
-    justifyContent: "center",
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
 
   contentWrapper: {
     paddingHorizontal: 16,
 
-    width: "100%",
-    backgroundColor: "#fff",
+    width: '100%',
+    backgroundColor: '#fff',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
-
   title: {
-    fontFamily: "Roboto",
-    fontStyle: "normal",
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
     fontWeight: 500,
     fontSize: 30,
     lineHeight: 35,
-    textAlign: "center",
+    textAlign: 'center',
 
     marginTop: 32,
     marginBottom: 32,
-    color: "#212121",
+    color: '#212121',
   },
-
   input: {
     height: 50,
     fontSize: 16,
     padding: 16,
     marginBottom: 16,
 
-    color: "#212121",
-    backgroundColor: "#f6f6f6",
+    color: '#212121',
+    backgroundColor: '#f6f6f6',
 
     borderWidth: 1,
-    borderColor: "#e8e8e8",
+    borderColor: '#e8e8e8',
     borderRadius: 8,
   },
-
   inputLast: {
     marginBottom: 0,
   },
-
   passWrapper: {
     marginBottom: 43,
   },
-
   btnPassShow: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
     top: 0,
-    alignSelf: "center",
+    alignSelf: 'center',
 
     padding: 16,
 
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
-
   btnPassShowText: {
-    color: "#1B4371",
+    color: '#1B4371',
   },
 
   btn: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 16,
 
-    backgroundColor: "#ff6c00",
+    backgroundColor: '#ff6c00',
     borderRadius: 100,
   },
-
   btnText: {
-    color: "#ffffff",
+    color: '#ffffff',
   },
 
   link: {
-    alignItems: "center",
+    alignItems: 'center',
 
     marginTop: 16,
   },
-
   linkText: {
-    color: "#1B4371",
+    color: '#1B4371',
     marginBottom: 45,
   },
-
   linkTextUnderline: {
-    textDecorationLine: "underline",
+    textDecorationLine: 'underline',
   },
 
+  //
   avatarWrapper: {
-    position: "absolute",
+    position: 'absolute',
     top: -60,
-    alignSelf: "center",
+    alignSelf: 'center',
 
     width: 120,
     height: 120,
 
-    backgroundColor: "#f6f6f6",
+    backgroundColor: '#f6f6f6',
     borderRadius: 16,
   },
-
   avatar: {
     width: 120,
     height: 120,
     borderRadius: 16,
   },
-
   btnAddAvatar: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 14,
     right: -12.5,
 
-    alignItems: "center",
-    alignContent: "center",
+    alignItems: 'center',
+    alignContent: 'center',
 
     width: 25,
     height: 25,
 
-    color: "#ff6c00",
-    backgroundColor: "#ffffff",
+    color: '#ff6c00',
+    backgroundColor: '#ffffff',
     borderRadius: 50,
   },
-
   btnAddAvatarLoad: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 14,
     right: -12.5,
 
-    alignItems: "center",
-    alignContent: "center",
+    alignItems: 'center',
+    alignContent: 'center',
 
     width: 25,
     height: 25,
 
-    color: "#ff6c00",
-    backgroundColor: "#ffffff",
+    color: '#ff6c00',
+    backgroundColor: '#ffffff',
     borderRadius: 50,
 
-    transform: [{ rotate: "45deg" }],
+    transform: [{ rotate: '45deg' }],
   },
-
   btnAddAvatarSvg: {
-    fill: "#ff6c00",
-    stroke: "#ff6c00",
-    backgroundColor: "#ffffff",
+    fill: '#ff6c00',
+    stroke: '#ff6c00',
+    backgroundColor: '#ffffff',
   },
-
   btnAddAvatarSvgLoad: {
-    fill: "#bdbdbd",
-    stroke: "#e8e8e8",
-    backgroundColor: "#ffffff",
+    fill: '#bdbdbd',
+    stroke: '#e8e8e8',
+    backgroundColor: '#ffffff',
   },
 });

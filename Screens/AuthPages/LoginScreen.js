@@ -21,7 +21,8 @@ import backgroundImg from '../../assets/img/background.jpg';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch;
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
 
